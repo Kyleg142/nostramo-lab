@@ -1,0 +1,11 @@
+# Talos secrets and machine configs
+controlplane.yaml
+talosconfig
+
+# Kubernetes credentials
+kubeconfig
+*.kubeconfig
+
+# Local environment overrides
+.env
+.terraform/
