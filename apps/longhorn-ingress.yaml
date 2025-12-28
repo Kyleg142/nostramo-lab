@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn-ingress-config
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/Kyleg142/nostramo-lab.git'
+    path: infrastructure/longhorn/longhorn-ingress
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
