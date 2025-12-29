@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: longhorn-ingress-config
+  name: longhorn-config
   annotations:
     argocd.argoproj.io/sync-wave: "4"
   namespace: argocd
