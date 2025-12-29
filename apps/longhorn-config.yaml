@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
-    path: infrastructure/longhorn/longhorn-ingress
+    path: infrastructure/longhorn
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
