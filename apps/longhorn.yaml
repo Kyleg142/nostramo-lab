@@ -3,12 +3,12 @@ kind: Application
 metadata:
   name: longhorn
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
   namespace: argocd
 spec:
   project: default
   sources:
-    - repoURL: 'https://github.com/Kyleg142/nostramo-lab.git'
+    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
       path: infrastructure/longhorn/longhorn-namespace
     - repoURL: https://charts.longhorn.io
       chart: longhorn

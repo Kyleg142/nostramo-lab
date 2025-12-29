@@ -7,12 +7,10 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  sources:
-    - repoURL: https://metallb.github.io/metallb
-      chart: metallb
-      targetRevision: 0.15.*
-    - repoURL: 'https://github.com/Kyleg142/nostramo-lab.git'
-      path: infrastructure/metallb
+  source:
+    repoURL: https://metallb.github.io/metallb
+    chart: metallb
+    targetRevision: 0.15.*
   destination:
     server: https://kubernetes.default.svc
     namespace: metallb-system
