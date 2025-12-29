@@ -18,4 +18,4 @@ patches:
           spec:
             containers:
             - name: argocd-server
-              command: ["argocd-server", "--insecure"]
+              args: ["--insecure"]
