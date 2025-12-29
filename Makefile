@@ -8,24 +8,24 @@ all: provision config
 
 # Applies the node config to each node and bootstraps the cluster.
 provision:
-	@echo "PROVISIONING ALL NODES..."
+	@echo "PROVISIONING ALL NODES"
 	@for node in $(NODES); do \
-		talosctl apply-config --insecure --nodes $$node --file controlplane.yaml; \
-	done
-	
-	@echo "STANDBY FOR PROVISIONING..."
-	@for node in $(NODES); do \
-		until talosctl --nodes $$node version >/dev/null 2>&1; do sleep 2; done; \
+	    talosctl apply-config --insecure --nodes $$node --file controlplane.yaml; \
 	done
 
+	@echo "STANDBY FOR PROVISIONING..."
+	timeout 300s sh -c 'until \
+		$(foreach node,$(NODES),nc -nzv $(node) 50000 &&) \
+		true; do sleep 5; done'
+
 	@#ONLY BOOTSTRAP THE FIRST NODE the others join automatically
-	@echo "BOOTSTRAPPING THE CLUSTER..."
+	@echo "BOOTSTRAPPING THE CLUSTER"
 	talosctl bootstrap --nodes $(CP_ENDPOINT)
 
 	@echo "STANDBY FOR BOOTSTRAPPING..."
 	talosctl health --nodes $(CP_ENDPOINT) --wait-timeout 10m
 
- 	@echo "CREATING NAMESPACES..."
+	@echo "CREATING NAMESPACES"
 	kubectl create ns argocd
 	kubectl create ns debug
 	kubectl label ns debug pod-security.kubernetes.io/enforce=privileged
@@ -50,6 +50,6 @@ config:
 nuke:
 	@echo "☢️ RESETTING CLUSTER..."
 	@for node in $(NODES); do \
-		echo "💥 RESETTING $$node..."; \
-		talosctl reset -n $$node --graceful=false --system-labels-to-wipe STATE, EPHEMERAL --reboot; \
+	    echo "💥 RESETTING $$node..."; \
+		talosctl reset -n $$node --graceful=false --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL --reboot; \
 	done
