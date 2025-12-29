@@ -7,12 +7,10 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  sources:
-    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
-      path: infrastructure/longhorn/longhorn-namespace
-    - repoURL: https://charts.longhorn.io
-      chart: longhorn
-      targetRevision: 1.10.*
+  source:
+    repoURL: https://charts.longhorn.io
+    chart: longhorn
+    targetRevision: 1.10.*
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
