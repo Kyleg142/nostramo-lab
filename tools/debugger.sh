@@ -1,5 +1,10 @@
+#!/usr/bin/env bash
+
+# Launches a privileged pod for low-level debugging. See the README for more info.
+
 # Has to be hostname, not physical IP
 node="$1"
+
 # Defaults to Arch if no second arg is provided
 image="${2:-archlinux:latest}"
 
