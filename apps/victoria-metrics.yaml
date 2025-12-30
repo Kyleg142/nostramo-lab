@@ -20,17 +20,20 @@ spec:
         vmsingle:
           spec:
             retentionPeriod: "14d"
-            storage:
-              annotations:
-                argocd.argoproj.io/sync-options: Delete=false
-              accessModes: ["ReadWriteOnce"]
-              resources:
-                requests:
-                  storage: 20Gi
             resources:
               requests:
                 cpu: "1"
                 memory: "1Gi"
+            storage:
+              volumeClaimTemplate:
+                metadata:
+                  annotations:
+                    argocd.argoproj.io/sync-options: Delete=false
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 20Gi
 
         grafana:
           enabled: true
