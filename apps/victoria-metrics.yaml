@@ -5,6 +5,8 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "5"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
@@ -14,10 +16,14 @@ spec:
     helm:
       values: |
         fullnameOverride: "vm-stack"
+
         vmsingle:
           spec:
             retentionPeriod: "14d"
             storage:
+              metadata:
+                annotations:
+                  argocd.argoproj.io/sync-options: Delete=false
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
@@ -26,9 +32,13 @@ spec:
               requests:
                 cpu: "1"
                 memory: "1Gi"
+            updateStrategy:
+              type: OnDelete
 
         grafana:
           enabled: true
+          deploymentStrategy:
+            type: Recreate
           persistence:
             enabled: true
             size: 5Gi
