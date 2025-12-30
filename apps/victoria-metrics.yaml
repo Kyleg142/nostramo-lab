@@ -29,7 +29,6 @@ spec:
 
         grafana:
           enabled: true
-          adminPassword: "grafana"
           persistence:
             enabled: true
             size: 5Gi
