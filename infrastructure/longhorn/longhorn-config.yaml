@@ -17,7 +17,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: longhorn.192.168.68.30.nip.io
+    - host: longhorn.nostramo.local
       http:
         paths:
           - path: /
