@@ -21,6 +21,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: vm-stack-grafana
+                name: victoria-metrics-stack-grafana
                 port:
                   number: 80
