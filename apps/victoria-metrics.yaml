@@ -34,7 +34,7 @@ spec:
           enabled: true
           deploymentStrategy:
             type: Recreate
-            rollingUpdate: null
+            rollingUpdate: {}
           persistence:
             enabled: true
             size: 5Gi
