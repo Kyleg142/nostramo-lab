@@ -21,9 +21,8 @@ spec:
           spec:
             retentionPeriod: "14d"
             storage:
-              metadata:
-                annotations:
-                  argocd.argoproj.io/sync-options: Delete=false
+              annotations:
+                argocd.argoproj.io/sync-options: Delete=false
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
@@ -32,8 +31,6 @@ spec:
               requests:
                 cpu: "1"
                 memory: "1Gi"
-            updateStrategy:
-              type: OnDelete
 
         grafana:
           enabled: true
