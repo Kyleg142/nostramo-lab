@@ -32,9 +32,6 @@ spec:
 
         grafana:
           enabled: true
-          deploymentStrategy:
-            type: Recreate
-            rollingUpdate: {}
           persistence:
             enabled: true
             size: 5Gi
