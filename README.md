@@ -3,21 +3,23 @@ This serves as a GitOps repository for a bare-metal, hyper-converged, 3-node Tal
 
 ```mermaid
 graph TD
-    subgraph LAN ["Local Network (192.168.68.0/24)"]
-        Switch["Switch"]
+    subgraph LAN ["Local Area Network"]
+        Switch["Switch</br>(192.168.68.0/24)"]
     end
 
     subgraph Cluster ["NOSTRAMO Cluster"]
         direction TB
-        Node1["Node 1 (Leader/CP) <br/> 192.168.68.68"]
-        Node2["Node 2 (Worker/CP) <br/> 192.168.68.94"]
-        Node3["Node 3 (Worker/CP) <br/> 192.168.68.95"]
+        Node1["Talos Node 1</br>(Leader/CP)"]
+        Node2["Talos Node 2</br>(Worker/CP)"]
+        Node3["Talos Node 3</br>(Worker/CP)"]
         
         Argo["ArgoCD (Root App)"]
+
         
+
         Longhorn["Longhorn (Persistent Volumes)"]
 
-        VM["VictoriaMetrics + Grafana (K8S Stack)"]
+        VM["VictoriaMetrics + Grafana (K8S Telemetry Stack)"]
         
         subgraph Networking ["Networking"]
             MetalLB["MetalLB (L2 Mode)"]
@@ -30,14 +32,13 @@ graph TD
     Switch --- Node2
     Switch --- Node3
     
-    Node1 & Node2 & Node3 --- Longhorn
+    Node1 & Node2 & Node3 --- Argo
     Argo -->|Manages| MetalLB
     Argo -->|Manages| Nginx
     Argo -->|Manages| Longhorn
     Argo -->|Manages| VM
     
     MetalLB ---|Advertises VIP .30| Nginx
-    Nginx ---|Exposes UI| Longhorn
 ```
 ### The Core Stack 📚
 | Tool | Purpose | Key Feature(s) |
