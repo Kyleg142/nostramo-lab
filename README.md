@@ -15,7 +15,9 @@ graph TD
         
         Argo["ArgoCD (Root App)"]
         
-        Longhorn["Longhorn Replicated Volumes"]
+        Longhorn["Longhorn (Persistent Volumes)"]
+
+        VM["VictoriaMetrics + Grafana (K8S Stack)"]
         
         subgraph Networking ["Networking"]
             MetalLB["MetalLB (L2 Mode)"]
@@ -32,6 +34,7 @@ graph TD
     Argo -->|Manages| MetalLB
     Argo -->|Manages| Nginx
     Argo -->|Manages| Longhorn
+    Argo -->|Manages| VM
     
     MetalLB ---|Advertises VIP .30| Nginx
     Nginx ---|Exposes UI| Longhorn
@@ -43,23 +46,15 @@ graph TD
 | ArgoCD | GitOps | Automated self-healing, orchestration. |
 | MetalLB | L2 Load Balancing | Interface-specific ARP advertisements. |
 | Ingress NGINX | Ingress | External access management. |
-| Longhorn | Storage | Multi-node replication for persistent volume HA. |
+| Longhorn | Storage | Persistent volume replication for high-availability. |
+| VictoriaMetrics | Telemetry | Efficient storage for cluster telemetry. |
+| Grafana | Observability | Real-time visualization of cluster telemtry. |
 
 ### Infrastructure as Code 📜
 The Makefile in the root of the repo is used to bootstrap the cluster and pull ArgoCD.
 ArgoCD then manages state and deployment by referencing the YAML manifests you can see right here in this repository.
 
-To add and configure pods/services, additional Application manifests (which reference Helm charts) are commited into `apps/`. I like to place supporting manifests in `infrastructure/`.
-
-### Networking 🕸️
-
-**Ingress NGINX**
-
-Provides the main VIP and manages external access to services hosted within the cluster. Unfortunately, support is ending in March 2026. I am looking at alternatives.
-
-**MetalLB**
-
-Allows each node to communicate with one another via Layer 2 ARP announcements. Requires interface filtering or VLAN isolation to not tank your local network. See https://metallb.universe.tf/concepts/layer2/ for a full description.
+To add and configure pods/services, additional Application manifests (which reference Helm charts) are commited into `apps/`. Supporting manifests are placed in `infrastructure/`
 
 ### Node Configuration ⚙️
 Unfortunately, I cannot include my controlplane.yaml in the repo due to it containing a litany of private certificates/secrets/keys.
@@ -82,7 +77,9 @@ Here is a list of all of the alterations or additions I performed:
 ### Tooling 🧰
 **Talos Node Debugger: `debugger.sh`**
 
-A lightweight bash utility designed to launch an interactive, highly privileged pod directly onto a targeted Kubernetes node. This script is specifically built for "break-glass" troubleshooting and low-level system administration on nodes where standard SSH access may be restricted or unavailable (such as Talos Linux). Cleans up after itself as well, terminating the pod upon exiting the session.
+Launches an interactive, highly privileged pod directly onto a targeted Kubernetes node. 
+
+Specifically built for "break-glass" troubleshooting and low-level system administration on nodes where standard SSH access may be restricted or unavailable (such as Talos Linux). Cleans up after itself as well, terminating the pod upon exiting the session.
 
 ### Hardware & Costs 🔌
 This lab was built on a tight budget, values are in USD:
