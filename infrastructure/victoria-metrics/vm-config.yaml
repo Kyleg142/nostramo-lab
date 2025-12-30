@@ -13,7 +13,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "100m"
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: grafana.nostramo.local
       http:
