@@ -7,10 +7,12 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
-  source:
-    repoURL: https://metallb.github.io/metallb
-    chart: metallb
-    targetRevision: 0.15.*
+  sources:
+    - repoURL: https://metallb.github.io/metallb
+      chart: metallb
+      targetRevision: 0.15.*
+    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
+      path: infrastructure/metallb
   destination:
     server: https://kubernetes.default.svc
     namespace: metallb-system
