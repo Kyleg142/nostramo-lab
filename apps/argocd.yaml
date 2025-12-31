@@ -11,7 +11,7 @@ spec:
   project: default
   source:
     repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
-    path: infrastructure/argocd/kustomize
+    path: infrastructure/argocd
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
