@@ -1,94 +1,91 @@
 # 🦇 nostramo-lab
-This serves as a GitOps repository for a bare-metal, hyper-converged, 3-node Talos K8S cluster.
+**A High-Availability, Hyper-Converged Kubernetes Cluster**
 
+Nostramo is a 3-node, bare-metal Kubernetes cluster built on Talos Linux. It serves as a declarative environment for testing GitOps workflows and cloud-native networking.
+
+### The Tech Stack 🛠️
+| Layer | Tool| Rationale |
+| --- | --- | --- |
+| OS | [Talos Linux](https://docs.siderolabs.com/talos/) | Security-hardened, immutable, and purely API-driven. |
+| GitOps | [ArgoCD](https://argo-cd.readthedocs.io/) | Maintains the cluster's desired state automatically by referencing this repo. |
+| Network | [MetalLB](https://metallb.io/) | Bridges the gap between bare metal and K8S by advertising IPs via Layer 2 ARP. |
+| Ingress | [Traefik](https://doc.traefik.io/traefik/) | Deployed as a DaemonSet for high availability, managing external traffic routing. |
+| Storage | [Longhorn](https://longhorn.io/docs/what-is-longhorn/) | Provides high-availability storage with cross-node replication for stateful workloads. |
+| Telemetry | [VictoriaMetrics](https://docs.victoriametrics.com/helm/victoria-metrics-k8s-stack/) | Chosen for its high efficiency and low resource footprint compared to Prometheus. |
 ```mermaid
 graph TD
-    subgraph LAN ["Local Area Network"]
-        Switch["Switch</br>(192.168.68.0/24)"]
-    end
+    Argo{{"ArgoCD<br/>(GitOps Controller)"}}
 
-    subgraph Cluster ["NOSTRAMO Cluster"]
+    subgraph Networking ["Networking"]
         direction TB
-        Node1["Talos Node 1</br>(Leader/CP)"]
-        Node2["Talos Node 2</br>(Worker/CP)"]
-        Node3["Talos Node 3</br>(Worker/CP)"]
-        
-        Argo["ArgoCD (Root App)"]
-
-        
-
-        Longhorn["Longhorn (Persistent Volumes)"]
-
-        VM["VictoriaMetrics + Grafana (K8S Telemetry Stack)"]
-        
-        subgraph Networking ["Networking"]
-            MetalLB["MetalLB (L2 Mode)"]
-            Nginx["Ingress NGINX (LoadBalancer)"]
-        end
+        MetalLB("MetalLB<br/>(L2 Load Balancer)")
+        Traefik("Traefik<br/>(Ingress Controller)")
     end
 
-    %% Connections
-    Switch --- Node1
-    Switch --- Node2
-    Switch --- Node3
+    subgraph Storage ["Storage"]
+        Longhorn("Longhorn<br/>(Replicated Block Storage)")
+    end
+
+    subgraph Observability ["Observability"]
+        direction TB
+        VM("VictoriaMetrics<br/>(Telemetry)")
+        Grafana("Grafana<br/>(Visualization)")
+    end
+
+    Argo -->|Manages| Networking
+    Argo -->|Manages| Storage
+    Argo -->|Manages| Observability
     
-    Node1 & Node2 & Node3 --- Argo
-    Argo -->|Manages| MetalLB
-    Argo -->|Manages| Nginx
-    Argo -->|Manages| Longhorn
-    Argo -->|Manages| VM
-    
-    MetalLB ---|Advertises VIP .30| Nginx
+    MetalLB -.- Traefik
+    VM -.- Grafana
 ```
-### The Core Stack 📚
-| Tool | Purpose | Key Feature(s) |
-| --- | --- | --- |
-| Talos Linux | Operating System | API-managed, immutable, K8S integration. |
-| ArgoCD | GitOps | Automated self-healing, orchestration. |
-| MetalLB | L2 Load Balancing | Interface-specific ARP advertisements. |
-| Ingress NGINX | Ingress | External access management. |
-| Longhorn | Storage | Persistent volume replication for high-availability. |
-| VictoriaMetrics | Telemetry | Efficient storage for cluster telemetry. |
-| Grafana | Observability | Real-time visualization of cluster telemtry. |
 
 ### Infrastructure as Code 📜
-The Makefile in the root of the repo is used to bootstrap the cluster and pull ArgoCD.
-ArgoCD then manages state and deployment by referencing the YAML manifests you can see right here in this repository.
 
-To add and configure pods/services, additional Application manifests (which reference Helm charts) are commited into `apps/`. Supporting manifests are placed in `infrastructure/`
+#### GitOps Workflow:
 
-### Node Configuration ⚙️
-Unfortunately, I cannot include my controlplane.yaml in the repo due to it containing a litany of private certificates/secrets/keys.
+**ArgoCD** manages the lifecycle of all services. I utilize sync waves to ensure that infrastructure (like MetalLB) is healthy before applications attempt to deploy.
 
-Here is a list of all of the alterations or additions I performed:
+Adding a service is as simple as committing a new Application manifest to the `apps/` directory.
 
+**Node Configuration:**
+
+Drift is eliminated through a Talos node configuration manifest. The OS runs in RAM, meaning that every reboot returns the node to a known clean state. 
+
+Here are two key modifications made to node configuration to facilitate the current architecture:
 - `cluster.apiServer.extraArgs.enable-aggregator-routing: true`
-  - Enables load-balancing for the two instances of metrics-server.
+  - Enables load-balancing for the two instances of metrics-server that are running within the cluster.
 - `cluster.allowSchedulingOnControlPlanes: true`
-  - Allows running workloads on control-plane nodes.
-- `cluster.controlPlane.endpoint: https://192.168.1.x:6443`
-  - Defines the endpoint for the leading node (the node that is bootstrapped in the Makefile).
-- `cluster.clusterName: NOSTRAMO`
-  - Sets a custom cluster name.
-- `machine.install.disk: /dev/nvme0n1`
-  - Sets the primary NVME as the installation disk.
-- `machine.install.image: factory.talos.dev/metal-installer/your-unique-identifier`
-  - Supplies the Talos image used for installation.
+  - Allows scheduling workloads on control-plane nodes. Vital for spreading workloads among the three converged nodes.
  
 ### Tooling 🧰
 **Talos Node Debugger: `debugger.sh`**
 
-Launches an interactive, highly privileged pod directly onto a targeted Kubernetes node. 
+Because Talos is an immutable "no-SSH" OS, standard troubleshooting is restricted. This tool is developed to:
+1) Launch a highly-privileged ephemeral pod on a target node.
+2) Provide low-level access to the host namespaces for hardware/network debugging.
+3) Automatically clean up all resources upon exit.
 
-Specifically built for "break-glass" troubleshooting and low-level system administration on nodes where standard SSH access may be restricted or unavailable (such as Talos Linux). Cleans up after itself as well, terminating the pod upon exiting the session.
+### Hardware & Efficiency 🔌
+This lab demonstrates that enterprise features do not require enterprise budgets.
+- **Compute:** 3x Ryzen 3550H (12 Cores / 24 Threads Total)
+- **Memory:** 48GB DDR4 RAM
+- **Storage:** 1.5TB NVME
+- **Power Efficiency:** The entire cluster pulls **~150W** under heavy load.
 
-### Hardware & Costs 🔌
-This lab was built on a tight budget, values are in USD:
-- 3x Ryzen 3550H, 16GB DDR4, 512GB NVME: ~$600
-- 1x TP Link 5-port 1Gbps Switch: $20
+Here is another cool graph showing you how the hardware is configured:
+```mermaid
+graph TD
+        Node1(["Talos Node 01<br/>(CP/Worker)"])
+        Node2(["Talos Node 02<br/>(CP/Worker)"])
+        Node3(["Talos Node 03<br/>(CP/Worker)"])
 
-24 threads, 48GB RAM, and 1.5TB of high-speed storage.
+        Switch("Switch<br/>(192.168.68.0/24)")
 
-Power consumption under load: **~150W**
+        %% Connections
+        Switch <-.-> Node1
+        Switch <-.-> Node2
+        Switch <-.-> Node3
+```
 
 
