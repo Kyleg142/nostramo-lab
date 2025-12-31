@@ -9,14 +9,16 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    repoURL: https://charts.longhorn.io
-    chart: longhorn
-    targetRevision: 1.10.*
-    helm:
-      values: |
-        preUpgradeChecker:
-          jobEnabled: False
+  sources:
+    - repoURL: https://charts.longhorn.io
+      chart: longhorn
+      targetRevision: 1.10.*
+      helm:
+        values: |
+          preUpgradeChecker:
+            jobEnabled: False
+    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
+      path: infrastructure/longhorn
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
