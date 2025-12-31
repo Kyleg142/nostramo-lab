@@ -72,8 +72,6 @@ This lab demonstrates that enterprise features do not require enterprise budgets
 - **Memory:** 48GB DDR4 RAM
 - **Storage:** 1.5TB NVME
 - **Power Efficiency:** The entire cluster pulls **~150W** under heavy load.
-
-Here is another cool graph showing you how the hardware is configured:
 ```mermaid
 graph TD
         Node1(["Talos Node 01<br/>(CP/Worker)"])
