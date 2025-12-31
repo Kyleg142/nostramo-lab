@@ -7,37 +7,40 @@ metadata:
     argocd.argoproj.io/sync-wave: "5"
 spec:
   project: default
-  source:
-    repoURL: https://victoriametrics.github.io/helm-charts/
-    chart: victoria-metrics-k8s-stack
-    targetRevision: 0.66.*
-    helm:
-      values: |
-        fullnameOverride: "vm-stack"
+  sources:
+    - repoURL: https://victoriametrics.github.io/helm-charts/
+      chart: victoria-metrics-k8s-stack
+      targetRevision: 0.66.*
+      helm:
+        values: |
+          fullnameOverride: "vm-stack"
 
-        vmsingle:
-          spec:
-            retentionPeriod: "14d"
-            resources:
-              requests:
-                cpu: "1"
-                memory: "1Gi"
-            storage:
-              accessModes: ["ReadWriteOnce"]
+          vmsingle:
+            spec:
+              retentionPeriod: "14d"
               resources:
                 requests:
-                  storage: 20Gi
+                  cpu: "1"
+                  memory: "1Gi"
+              storage:
+                accessModes: ["ReadWriteOnce"]
+                resources:
+                  requests:
+                    storage: 20Gi
 
-        grafana:
-          enabled: true
-          persistence:
+          grafana:
             enabled: true
-            size: 5Gi
-          sidecar:
-            dashboards:
+            persistence:
               enabled: true
-              label: grafana_dashboard
-              labelValue: "1"
+              size: 5Gi
+            sidecar:
+              dashboards:
+                enabled: true
+                label: grafana_dashboard
+                labelValue: "1"
+
+    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
+      path: infrastructure/victoria-metrics
 
   destination:
     server: https://kubernetes.default.svc
@@ -47,6 +50,7 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
+      - CreateNamespace=true
       - RespectIgnoreDifferences=true
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
