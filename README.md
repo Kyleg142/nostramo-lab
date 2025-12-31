@@ -21,16 +21,19 @@ graph TD
         MetalLB("MetalLB<br/>(L2 Load Balancer)")
         Traefik("Traefik<br/>(Ingress Controller)")
     end
+    style Networking stroke:#00ffff
 
     subgraph Storage ["Storage"]
         Longhorn("Longhorn<br/>(Replicated Block Storage)")
     end
+    style Storage stroke:#00ffff
 
     subgraph Observability ["Observability"]
         direction TB
         VM("VictoriaMetrics<br/>(Telemetry)")
         Grafana("Grafana<br/>(Visualization)")
     end
+    style Observability stroke:#00ffff
 
     Argo -->|Manages| Networking
     Argo -->|Manages| Storage
