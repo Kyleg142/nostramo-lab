@@ -12,8 +12,6 @@ kind: Ingress
 metadata:
   name: longhorn-ingress
   namespace: longhorn-system
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
 spec:
   ingressClassName: traefik
   rules:

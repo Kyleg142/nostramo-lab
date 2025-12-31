@@ -10,8 +10,6 @@ kind: Ingress
 metadata:
   name: grafana-ingress
   namespace: victoria-metrics
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
 spec:
   ingressClassName: traefik
   rules:

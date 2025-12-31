@@ -3,8 +3,6 @@ kind: Ingress
 metadata:
   name: argocd-ingress
   namespace: argocd
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
 spec:
   ingressClassName: traefik
   rules:
