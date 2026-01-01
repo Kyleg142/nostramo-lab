@@ -7,23 +7,25 @@ metadata:
     argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
-  source:
-    repoURL: https://charts.jetstack.io
-    targetRevision: v1.19.*
-    chart: cert-manager
-    # High-availability configuration
-    helm:
-      values: |
-        installCRDs: true
-        replicaCount: 2
-        webhook:
-          replicaCount: 3
-          securePort: 10260
-        cainjector:
+  sources:
+    - repoURL: https://charts.jetstack.io
+      targetRevision: v1.19.*
+      chart: cert-manager
+      # High-availability configuration
+      helm:
+        values: |
+          installCRDs: true
           replicaCount: 2
-        podDisruptionBudget:
-          enabled: true
-          minAvailable: 1
+          webhook:
+            replicaCount: 3
+            securePort: 10260
+          cainjector:
+            replicaCount: 2
+          podDisruptionBudget:
+            enabled: true
+            minAvailable: 1
+    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
+      path: infrastructure/cert-manager
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
