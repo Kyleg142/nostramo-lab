@@ -3,10 +3,18 @@ kind: Ingress
 metadata:
   name: argocd-ingress
   namespace: argocd
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: argocd-repo-server-grpc@kubernet
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
 spec:
+  tls:
+    - hosts:
+        - argocd.nostramo.cloud
+      secretName: argocd-tls-cert
   ingressClassName: traefik
   rules:
-    - host: argocd.nostramo.local
+    - host: argocd.nostramo.cloud
       http:
         paths:
           - path: /
