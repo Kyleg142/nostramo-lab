@@ -10,6 +10,8 @@ kind: Ingress
 metadata:
   name: grafana-ingress
   namespace: victoria-metrics
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-cloudflare"
 spec:
   ingressClassName: traefik
   rules:
