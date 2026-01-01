@@ -4,13 +4,14 @@ metadata:
   name: traefik
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
     repoURL: https://traefik.github.io/charts
     chart: traefik
     targetRevision: 38.*
+    # deployment.kind: DaemonSet replicates the ingress controller across all nodes
     helm:
       values: |
         deployment:
