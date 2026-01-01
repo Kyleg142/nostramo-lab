@@ -11,8 +11,13 @@ metadata:
   name: grafana-ingress
   namespace: victoria-metrics
   annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
     cert-manager.io/cluster-issuer: "letsencrypt-cloudflare"
 spec:
+  tls:
+    - hosts:
+        - grafana.nostramo.cloud
+      secretName: grafana-tls-cert
   ingressClassName: traefik
   rules:
     - host: grafana.nostramo.cloud
