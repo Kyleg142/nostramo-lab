@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://charts.jetstack.io
+    targetRevision: v1.19.*
+    chart: cert-manager
+    # High-availability configuration
+    helm:
+      values: |
+        installCRDs: true
+        replicaCount: 2
+        webhook:
+          replicaCount: 3
+          securePort: 10260
+        cainjector:
+          replicaCount: 2
+        podDisruptionBudget:
+          enabled: true
+          minAvailable: 1
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
