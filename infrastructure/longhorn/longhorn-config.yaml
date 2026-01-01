@@ -12,10 +12,17 @@ kind: Ingress
 metadata:
   name: longhorn-ingress
   namespace: longhorn-system
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/cluster-issuer: "letsencrypt-cloudflare"
 spec:
+  tls:
+    - hosts:
+        - longhorn.nostramo.cloud
+      secretName: longhorn-tls-cert
   ingressClassName: traefik
   rules:
-    - host: longhorn.nostramo.local
+    - host: longhorn.nostramo.cloud
       http:
         paths:
           - path: /
