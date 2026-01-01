@@ -15,7 +15,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: grafana.nostramo.local
+    - host: grafana.nostramo.cloud
       http:
         paths:
           - path: /
