@@ -1,6 +1,7 @@
 # Talos secrets and machine configs
 controlplane.yaml
 talosconfig
+secrets/
 
 # Kubernetes credentials
 kubeconfig
