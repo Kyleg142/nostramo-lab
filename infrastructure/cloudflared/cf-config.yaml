@@ -7,5 +7,5 @@ tunnelSecrets:
     name: cert-pem-file-secret
 ingress:
   - hostname: grafana.nostramo.cloud
-    service: http://traefik.kube-system.svc.cluster.local:80
+    service: http://traefik.traefik.svc.cluster.local:80
   - service: http_status:404
