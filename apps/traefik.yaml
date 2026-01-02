@@ -28,8 +28,7 @@ spec:
               publishedService:
                 enabled: true
     - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
-      targetRevision: HEAD
-      source: infrastructure/traefik
+      path: infrastructure/traefik
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik
