@@ -11,7 +11,7 @@ spec:
     targetRevision: 2.2.*
     helm:
       valueFiles:
-        - infrastructure/cf-config.yaml
+        - infrastructure/cloudflared/cf-config.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: cloudflared
