@@ -5,13 +5,16 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: "https://community-charts.github.io/helm-charts"
-    chart: cloudflared
-    targetRevision: 2.2.*
-    helm:
-      valueFiles:
-        - infrastructure/cloudflared/cf-config.yaml
+  sources:
+    - repoURL: "https://community-charts.github.io/helm-charts"
+      chart: cloudflared
+      targetRevision: 2.2.*
+      helm:
+        valueFiles:
+          - $values/infrastructure/cloudflared/cf-config.yaml
+    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
+      targetRevision: HEAD
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: cloudflared
