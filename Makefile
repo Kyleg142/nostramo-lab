@@ -28,7 +28,6 @@ provision:
 	@echo "CREATING NAMESPACES"
 	kubectl create ns argocd
 	kubectl create ns cert-manager
-	kubectl create ns cloudflared
 	kubectl create ns debug
 	kubectl label ns debug pod-security.kubernetes.io/enforce=privileged
 	kubectl apply -f secrets/cloudflare-api.yaml
