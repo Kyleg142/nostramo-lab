@@ -11,24 +11,15 @@ spec:
       targetRevision: 2.2.*
       helm:
         values: |
-          replicaCount: 3
-
-          tunnel:
-            existingSecret: tunnel-credentials
-
-          env:
-            - name: TUNNEL_ID
-              valueFrom:
-                secretKeyRef:
-                  name: tunnel-credentials
-                  key: tunnel-id
-
-          args:
-            - tunnel
-            - --config
-            - /etc/cloudflared/config.yaml
-            - run
-            - $(TUNNEL_ID)
+          replica
+            count: 2
+          tunnelConfig:
+            name: nostramo-tunnel
+          tunnelSecrets:
+            existingConfigJsonFileSecret:
+              name: config-json-file-secret
+            existingPemFileSecret:
+              name: cert-pem-file-secret
 
     - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
       path: infrastructure/cloudflared
