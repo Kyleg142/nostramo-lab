@@ -5,22 +5,13 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  sources:
-    - repoURL: "https://community-charts.github.io/helm-charts"
-      chart: cloudflared
-      targetRevision: 2.2.*
-      helm:
-        values: |
-          tunnelConfig:
-            name: nostramo-tunnel
-          tunnelSecrets:
-            existingConfigJsonFileSecret:
-              name: config-json-file-secret
-            existingPemFileSecret:
-              name: cert-pem-file-secret
-
-    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
-      path: infrastructure/cloudflared
+  source:
+    repoURL: "https://community-charts.github.io/helm-charts"
+    chart: cloudflared
+    targetRevision: 2.2.*
+    helm:
+      valueFiles:
+        - infrastructure/cf-config.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: cloudflared
