@@ -25,7 +25,7 @@ spec:
       path: infrastructure/cloudflared
   destination:
     server: https://kubernetes.default.svc
-    namespace: cloudflare
+    namespace: cloudflared
   syncPolicy:
     automated:
       prune: true
