@@ -28,12 +28,10 @@ provision:
 	@echo "CREATING NAMESPACES"
 	kubectl create ns argocd
 	kubectl create ns cert-manager
-	kubectl create ns cloudflare
+	kubectl create ns cloudflared
 	kubectl create ns debug
 	kubectl label ns debug pod-security.kubernetes.io/enforce=privileged
 	kubectl apply -f secrets/cloudflare-api.yaml
-	kubectl create secret generic config-json-file-secret -n cloudflare --from-file=secrets/credentials.json
-	kubectl create secret generic cert-pem-file-secret -n cloudflare --from-file=secrets/cert.pem
 
 	@echo "INSTALLING ARGOCD..."
 	kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
