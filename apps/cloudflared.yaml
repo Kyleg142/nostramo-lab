@@ -11,8 +11,6 @@ spec:
       targetRevision: 2.2.*
       helm:
         values: |
-          replica
-            count: 2
           tunnelConfig:
             name: nostramo-tunnel
           tunnelSecrets:
