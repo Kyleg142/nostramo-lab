@@ -1,7 +1,7 @@
 # 🦇 nostramo-lab
 **A High-Availability, Hyper-Converged Kubernetes Cluster**
 
-Nostramo is a 3-node, bare-metal Kubernetes cluster built on Talos Linux. It serves as a declarative environment for testing GitOps workflows and cloud-native networking.
+**nostramo-lab** is a 3-node, bare-metal Kubernetes cluster built on Talos Linux. It serves as a declarative environment for testing GitOps workflows and cloud-native networking.
 
 ### The Tech Stack 🛠️
 | Layer | Tool| Rationale |
@@ -47,17 +47,17 @@ graph TD
 
 #### GitOps Workflow:
 
-**ArgoCD** manages the lifecycle of all services. I utilize sync waves to ensure that infrastructure (like MetalLB) is healthy before applications attempt to deploy.
+**ArgoCD** manages the lifecycle of all services in the cluster by referencing the manifests committed to this repo. Sync waves are utilized to ensure that infrastructure (like MetalLB) is healthy before applications attempt to deploy.
 
-Adding a service is as simple as committing a new Application manifest to the `apps/` directory.
+Adding a service is as simple as committing a new Application manifest to the `apps/` directory. Supporting manifests are placed into subdirectories in `infrastructure/`.
 
 #### Provisioning:
 
-A Makefile automates the entire provisioning of the cluster itself, applying a declarative Talos manifest to each node. Initial namespaces are created, secrets are instantiated, and ArgoCD is pulled into the cluster to begin deploying the infrastructure. All with a simple `make provision` command.
+A Makefile automates the entire provisioning of the cluster itself, applying a declarative Talos manifest to each node and bootstrapping the cluster. Initial namespaces are created, secrets are instantiated, and ArgoCD is pulled into the cluster to begin deploying the infrastructure. All with a simple `make provision` command.
 
 ### Talos Node Configuration ⚙️
 
-My Talos Linux image uses several system extensions for hardware compatibility, including:
+The Talos Linux image used includes several system extensions for compatibility:
 - **amdgpu**: Firmware binaries and kernel modules for AMD GPUs.
 - **amd-ucode**: Microcode update package for AMD CPUs.
 - **iscsi-tools**: Makes remote storage appear like local disks. Needed by Longhorn.
@@ -66,9 +66,7 @@ My Talos Linux image uses several system extensions for hardware compatibility, 
 - **i915**: Optional, for Intel GPU support.
 - **intel-ucode**: Optional, mircrocode update package for Intel CPUs.
 
-I may also add the cloudflared system extension to my next OS update, as I would like to use it for hosting external services.
-
-Drift is eliminated through the use of a declarative Talos node manifest. The OS runs in RAM, meaning that every reboot returns the node to a known clean state. 
+Drift is eliminated through the use of a Talos node manifest. The OS runs in RAM, meaning that every reboot returns the node to a known clean state. 
 
 Here are three key modifications made to node configuration to facilitate the current architecture:
 - `cluster.apiServer.extraArgs.enable-aggregator-routing: true`
