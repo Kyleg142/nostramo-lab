@@ -53,7 +53,7 @@ Adding a service is as simple as committing a new Application manifest to the `a
 
 #### Provisioning:
 
-A Makefile automates the entire provisioning of the cluster itself, applying a declarative Talos manifest to each node and bootstrapping the cluster. Initial namespaces are created, secrets are instantiated, and ArgoCD is pulled into the cluster to begin deploying the infrastructure. All with a simple `make provision` command.
+A Makefile automates the provisioning of the cluster itself, applying a declarative Talos manifest to each node and bootstrapping the cluster. Initial namespaces are created, secrets are instantiated, and ArgoCD is pulled into the cluster to begin deploying the infrastructure. All with a simple `make provision` command.
 
 ### Talos Node Configuration ⚙️
 
