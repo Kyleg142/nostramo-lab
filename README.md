@@ -51,16 +51,33 @@ graph TD
 
 Adding a service is as simple as committing a new Application manifest to the `apps/` directory.
 
-**Node Configuration:**
+#### Provisioning:
 
-Drift is eliminated through a Talos node configuration manifest. The OS runs in RAM, meaning that every reboot returns the node to a known clean state. 
+A Makefile automates the entire provisioning of the cluster itself, applying a declarative Talos manifest to each node. Initial namespaces are created, secrets are instantiated, and ArgoCD is pulled into the cluster to begin deploying the infrastructure. All with a simple `make provision` command.
 
-Here are two key modifications made to node configuration to facilitate the current architecture:
+### Talos Node Configuration ⚙️
+
+My Talos Linux image uses several system extensions for hardware compatibility, including:
+- **amdgpu**: Firmware binaries and kernel modules for AMD GPUs.
+- **amd-ucode**: Microcode update package for AMD CPUs.
+- **iscsi-tools**: Makes remote storage appear like local disks. Needed by Longhorn.
+- **realtek-firmware**: Provides realtek firmware binaries.
+- **util-linux-tools**: Packages essential Linux utilities for use on Talos nodes.
+- **i915**: Optional, for Intel GPU support.
+- **intel-ucode**: Optional, mircrocode update package for Intel CPUs.
+
+I may also add the cloudflared system extension to my next OS update, as I would like to use it for hosting external services.
+
+Drift is eliminated through the use of a declarative Talos node manifest. The OS runs in RAM, meaning that every reboot returns the node to a known clean state. 
+
+Here are three key modifications made to node configuration to facilitate the current architecture:
 - `cluster.apiServer.extraArgs.enable-aggregator-routing: true`
   - Enables load-balancing for the two instances of metrics-server that are running within the cluster.
 - `cluster.allowSchedulingOnControlPlanes: true`
-  - Allows scheduling workloads on control-plane nodes. Vital for spreading workloads among the three converged nodes.
- 
+  - Allows scheduling workloads on control-plane nodes. Vital for enabling workloads among the three converged nodes.
+- `cluster.proxy.config.ipvs.strictARP: true`
+  - Enforces stricter ARP handling to ensure service ClusterIPs are consistently mapped to a single MAC address. Needed for MetalLB.
+
 ### Tooling 🧰
 **Talos Node Debugger: `debugger.sh`**
 
@@ -88,5 +105,3 @@ graph TD
         Switch <-.-> Node2
         Switch <-.-> Node3
 ```
-
-
