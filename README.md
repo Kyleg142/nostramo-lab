@@ -106,7 +106,7 @@ graph TD
 
 ## Bare-Metal Challenges 🧗
 ### MetalLB Network Saturation
-When implementing MetalLB on top of Talos Linux, Layer 2 ARP advertisement can absolutely saturate and cripple your local network if **interface filtering** is not configured.
+When implementing MetalLB on top of Talos Linux, Layer 2 ARP advertisement can saturate and cripple your local network if **interface filtering** is not configured.
 
 #### Interface Filtering
 Interface filtering restricts the interfaces that MetalLB can use for advertisement. It pins traffic to a specific physical wire, providing a deterministic and one-dimensional route.
@@ -125,4 +125,4 @@ spec:
   interfaces:
     - eno1 # Ryzen MiniPCs
 ```
-This tells MetalLB that, "You can only announce from this physical interface (`eno1`) attributed to these virtual IPs (`first-pool`)." 
+With this set, MetalLB will only advertise from `eno1`, which is the identifier for the physical RJ45 port on each node.
