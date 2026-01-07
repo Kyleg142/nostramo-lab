@@ -103,3 +103,26 @@ graph TD
         Switch <-.-> Node2
         Switch <-.-> Node3
 ```
+
+## Bare-Metal Challenges 🧗
+### MetalLB Network Saturation
+When implementing MetalLB on top of Talos Linux, Layer 2 ARP advertisement can absolutely saturate and cripple your local network if **interface filtering** is not configured.
+
+#### Interface Filtering
+Interface filtering restricts the interfaces that MetalLB can use for advertisement. It pins traffic to a specific physical wire, providing a deterministic and one-dimensional route.
+
+Here is what my L2Advertisement manifest looks like:
+```yaml
+# Refer to spec.interfaces
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: broadcast-all
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - first-pool
+  interfaces:
+    - eno1 # Ryzen MiniPCs
+```
+This tells MetalLB that, "You can only announce from this physical interface (`eno1`) attributed to these virtual IPs (`first-pool`)." 
