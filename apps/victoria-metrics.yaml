@@ -44,3 +44,8 @@ spec:
       name: victoria-metrics-stack-victoria-metrics-operator-admission
       jqPathExpressions:
         - ".webhooks[]?.clientConfig.caBundle"
+    - group: ""
+      kind: Secret
+      name: victoria-metrics-stack-grafana
+      jsonPointers:
+        - /data
