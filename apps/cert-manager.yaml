@@ -11,21 +11,15 @@ spec:
     - repoURL: https://charts.jetstack.io
       targetRevision: v1.19.*
       chart: cert-manager
-      # High-availability configuration
       helm:
-        values: |
-          installCRDs: true
-          replicaCount: 2
-          webhook:
-            replicaCount: 3
-            securePort: 10260
-          cainjector:
-            replicaCount: 2
-          podDisruptionBudget:
-            enabled: true
-            minAvailable: 1
+        valueFiles:
+          - $values/infrastructure/cert-manager/values.yaml
+    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
+      targetRevision: HEAD
+      ref: values
     - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
       path: infrastructure/cert-manager
+      targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
