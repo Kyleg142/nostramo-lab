@@ -1,0 +1,23 @@
+fullnameOverride: "vm-stack"
+vmsingle:
+  spec:
+    retentionPeriod: "14d"
+    resources:
+      requests:
+        cpu: "1"
+        memory: "1Gi"
+    storage:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 20Gi
+grafana:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 5Gi
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
