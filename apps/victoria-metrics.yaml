@@ -14,12 +14,12 @@ spec:
       helm:
         valueFiles:
           - $values/infrastructure/victoria-metrics/values.yaml
-        sources:
-          - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
-            targetRevision: HEAD
-            ref: values
+    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
+      targetRevision: HEAD
+      ref: values
     - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
       path: infrastructure/victoria-metrics
+      targetRevision: HEAD
 
   destination:
     server: https://kubernetes.default.svc
