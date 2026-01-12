@@ -13,8 +13,7 @@ provision:
 	    talosctl apply-config --insecure --nodes $$node --file controlplane.yaml; \
 	done
 
-	@echo "STANDBY FOR PROVISIONING..."
-	timeout 300s sh -c 'until \
+	@timeout 300s sh -c 'until \
 		$(foreach node,$(NODES),nc -nzv $(node) 50000 &&) \
 		true; do sleep 5; done'
 
