@@ -49,3 +49,8 @@ spec:
       name: victoria-metrics-stack-grafana
       jsonPointers:
         - /data
+    - group: apps
+      kind: Deployment
+      name: victoria-metrics-stack-grafana
+      jsonPointers:
+        - /spec/template/metadata/annotations/checksum~1secret
