@@ -21,6 +21,8 @@ grafana:
       enabled: true
       label: grafana_dashboard
       labelValue: "1"
+      provider:
+        name: "vm-stack-dashboard-provider"
 victoria-metrics-operator:
   admissionWebhooks:
     enabled: true
