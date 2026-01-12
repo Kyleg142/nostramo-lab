@@ -7,26 +7,16 @@ metadata:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-  source:
-    repoURL: https://traefik.github.io/charts
-    chart: traefik
-    targetRevision: 38.*
-    # deployment.kind: DaemonSet replicates the ingress controller across all nodes
-    helm:
-      values: |
-        deployment:
-          kind: DaemonSet
-        service:
-          enabled: true
-          type: LoadBalancer
-          spec:
-            loadBalancerIP: 192.168.68.30
-            externalTrafficPolicy: Local
-        providers:
-          kubernetesIngress:
-            enabled: true
-            publishedService:
-              enabled: true
+  sources:
+    - repoURL: https://traefik.github.io/charts
+      chart: traefik
+      targetRevision: 38.*
+      helm:
+        valueFiles:
+          - $values/infrastructure/traefik/values.yaml
+    - repoURL: "https://github.com/Kyleg142/nostramo-lab.git"
+      targetRevision: HEAD
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik
