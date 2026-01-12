@@ -73,7 +73,7 @@ Here are three key modifications made to node configuration to facilitate the cu
   - Enables load-balancing for the two instances of metrics-server that are running within the cluster.
 - `cluster.allowSchedulingOnControlPlanes: true`
   - Allows scheduling workloads on control-plane nodes. Vital for enabling workloads among the three converged nodes.
-- `cluster.proxy.config.ipvs.strictARP: true`
+- `cluster.proxy.extraArgs.ipvs-strict-arp: true`
   - Enforces stricter ARP handling to ensure service ClusterIPs are consistently mapped to a single MAC address. Needed for MetalLB.
 
 ### Tooling 🧰
