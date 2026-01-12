@@ -1,0 +1,13 @@
+deployment:
+  kind: DaemonSet
+service:
+  enabled: true
+  type: LoadBalancer
+  spec:
+    loadBalancerIP: 192.168.68.30
+    externalTrafficPolicy: Local
+providers:
+  kubernetesIngress:
+    enabled: true
+    publishedService:
+      enabled: true
